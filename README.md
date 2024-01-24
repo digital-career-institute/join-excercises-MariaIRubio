@@ -6,7 +6,9 @@ Join excercises
 1. Select all product names for suppliers from USA.
 ```sql
 SELECT 
-  product_id, product_name, s.country
+  product_id,
+  product_name,
+  s.country
 FROM
   products p
 JOIN 
