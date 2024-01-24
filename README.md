@@ -110,27 +110,52 @@ WHERE
 11. Select employee id and his boss last name for those who have orders with date later than '1996-07-18'.
 if an employee doesn't have a boss don't include him.
 ```sql
+SELECT DISTINCT
+  (e.employee_id),
+  e.last_name,
+  e.first_name,
+  e2.last_name AS boss_last_name,
+  COUNT(o.order_date) AS total_orders
+FROM 
+  employees e
+RIGHT JOIN 
+  employees e2 ON e.employee_id = e2.employee_id
+LEFT JOIN 
+  orders o ON e.employee_id = o.employee_id
+WHERE
+  o.order_date > '1996-07-18'
+GROUP BY
+  (e.employee_id),
+  e.last_name,
+  e.first_name,
+  e2.last_name
+ORDER BY
+e.employee_id; 
 ```
 12. List the employees in the warehouse with orders that are not shipped yet.
 ```sql
+SELECT DISTINCT
+  e.employee_id,
+  e.first_name, 
+  e.last_name,
+  o.*
+FROM 
+  employees e
+LEFT JOIN 
+  orders o ON e.employee_id = o.employee_id
+WHERE
+  o.shipped_date IS NULL;
 ```
 13. Calculate the price for each product with its name in each order after discount is applied. 
 ```sql
 SELECT 
-  od.order_id,
+  od.*,
   p.product_name,
-  od.quantity,
-  od.unit_price, 
-  od.discount,
   ROUND(CAST((od.unit_price - od.discount)*od.quantity AS NUMERIC),2) AS final_price
 FROM 
   products p
 LEFT JOIN
   order_details od ON p.product_id = od.product_id
-GROUP BY
-  od.order_id,
-  p.product_name,
-  od.quantity,
-  od.unit_price, 
-  od.discount;
+ORDER BY
+final_price DESC;
 ```
