@@ -11,27 +11,27 @@ SELECT
   s.country
 FROM
   products p
-JOIN 
+LEFT JOIN 
   suppliers s ON p.supplier_id = s.supplier_id
 WHERE 
-  s.supplier_id IN (SELECT s.supplier_id FROM suppliers s WHERE country = 'USA');
+  s.country = 'USA';
 ```
 3. Select order id, order date, employee first and last name for employee whose last name starts with 'D' and for order that was shipped to Germany.
 ```sql
 SELECT DISTINCT
-  order_id, 
-  order_date, 
-  first_name, 
-  last_name,
-  ship_country
+  o.order_id, 
+  o.order_date, 
+  e.first_name, 
+  e.last_name,
+  o.ship_country
 FROM 
   orders o
-JOIN 
+LEFT JOIN 
   employees e ON o.employee_id = e.employee_id
 WHERE
-  last_name LIKE 'D%'
+  e.last_name LIKE 'D%'
 AND 
-  ship_country = 'Germany';
+  o.ship_country = 'Germany';
 ```
 4. Select all orders shipped by United Package for orders sooner than '1996-08-12'
 ```sql
@@ -64,14 +64,14 @@ SELECT
   o.order_date
 FROM 
   order_details od
-JOIN
+LEFT JOIN
   products p ON od.product_id = p.product_id
 LEFT JOIN 
   categories c ON p.category_id = c.category_id
 JOIN
   orders o ON od.order_id = o.order_id
 WHERE
-  c.category_id IN (SELECT category_id FROM categories WHERE category_name = 'Beverages')
+  c.category_name = 'Beverages'
 AND
   o.order_date  = '1996-08-14';
 ```
@@ -86,7 +86,7 @@ FROM
   products p
 LEFT JOIN 
   categories c ON p.category_id = c.category_id
-JOIN
+LEFT JOIN
   suppliers s ON p.supplier_id = s.supplier_id
 WHERE
   s.company_name = 'Lyngbysild'
@@ -102,9 +102,9 @@ FROM
   employees e
 LEFT JOIN 
   employee_territories et ON e.employee_id = et.employee_id
-JOIN
+LEFT JOIN
   territories t ON et.territory_id = t.territory_id
-JOIN 
+LEFT JOIN 
   region r ON t.region_id = r.region_id
 WHERE
   region_description = 'Northern';
